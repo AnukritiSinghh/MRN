@@ -129,6 +129,7 @@ class Workspace(object):
             self.logger.log('eval/true_episode_success', success_rate, self.step)
         self.logger.dump(self.step)
 
+    # (state, action, reward) are the experiences which are added to the reward training data, that influence the reward update
     def learn_reward(self, first_flag=0):
         # get feedbacks
         labeled_queries, noisy_queries = 0, 0
@@ -217,6 +218,7 @@ class Workspace(object):
                 self.logger.log('train/episode', episode, self.step)
 
             # sample action for data collection
+            # start with sampling random actions from the action seed (num_seed_steps)
             if self.step < self.cfg.num_seed_steps:
                 action = self.env.action_space.sample()
             else:
@@ -287,7 +289,7 @@ class Workspace(object):
                         self.learn_reward()
                         self.replay_buffer.relabel_with_predictor(self.reward_model)
                         interact_count = 0
-
+                # from the experience collected in replay buffer, update the policy based on actor critic
                 self.agent.update(self.replay_buffer, self.logger, self.step, 1)
 
             # unsupervised exploration
