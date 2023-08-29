@@ -161,6 +161,7 @@ class Workspace(object):
                 if self.cfg.label_margin > 0 or self.cfg.teacher_eps_equal > 0:
                     train_acc = self.reward_model.train_soft_reward()
                 else:
+                    # changes in this function in reward_model
                     train_acc = self.reward_model.train_reward()
                 total_acc = np.mean(train_acc)
 
